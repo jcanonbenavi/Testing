@@ -1,16 +1,17 @@
 package hunter
 
 import (
-	"exercise-01/positioner"
-	"exercise-01/prey"
-	"exercise-01/simulator"
+	"exercise-03/internal/positioner"
+	"exercise-03/internal/prey"
+	"exercise-03/internal/simulator"
 	"fmt"
 	"math/rand"
+	"time"
 )
 
-// func init() {
-// 	rand.Seed(time.Now().UnixNano())
-// }
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 // CreateWhiteShark creates a new WhiteShark (with default parameters)
 func CreateWhiteShark(simulator simulator.CatchSimulator) (h Hunter) {
@@ -32,12 +33,19 @@ func CreateWhiteShark(simulator simulator.CatchSimulator) (h Hunter) {
 	return
 }
 
+// ConfigWhiteShark is the configuration for WhiteShark
+type ConfigWhiteShark struct {
+	Speed     float64
+	Position  *positioner.Position
+	Simulator simulator.CatchSimulator
+}
+
 // NewWhiteShark creates a new WhiteShark
-func NewWhiteShark(speed float64, position *positioner.Position, simulator simulator.CatchSimulator) (h Hunter) {
+func NewWhiteShark(config ConfigWhiteShark) (h Hunter) {
 	h = &WhiteShark{
-		speed:     speed,
-		position:  position,
-		simulator: simulator,
+		speed:     config.Speed,
+		position:  config.Position,
+		simulator: config.Simulator,
 	}
 	return
 }
@@ -52,7 +60,8 @@ type WhiteShark struct {
 	simulator simulator.CatchSimulator
 }
 
-func (w *WhiteShark) Hunt(prey prey.Prey) (err error) {
+// Hunt hunts the prey
+func (w *WhiteShark) Hunt(prey prey.Prey) (duration float64, err error) {
 	// get the position of the prey
 	preySubject := &simulator.Subject{
 		Position: prey.GetPosition(),
@@ -66,10 +75,17 @@ func (w *WhiteShark) Hunt(prey prey.Prey) (err error) {
 	}
 
 	// check if shark can catch the prey
-	if !w.simulator.CanCatch(sharkSubject, preySubject) {
+	duration, ok := w.simulator.CanCatch(sharkSubject, preySubject)
+	if !ok {
 		err = fmt.Errorf("%w: shark can not catch the prey", ErrCanNotHunt)
 		return
 	}
 
 	return
+}
+
+// Configure configures the shark
+func (w *WhiteShark) Configure(speed float64, position *positioner.Position) {
+	(*w).speed = speed
+	(*w).position = position
 }

@@ -2,6 +2,10 @@ package prey
 
 import "exercise-01/positioner"
 
+func NewPreyStub() *PreyStub {
+	return &PreyStub{}
+}
+
 type PreyStub struct {
 	FuncGetSpeed    func() (speed float64)
 	FuncGetPosition func() (position *positioner.Position)

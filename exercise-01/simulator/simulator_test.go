@@ -35,14 +35,14 @@ func TestCanCatch(t *testing.T) {
 		require.Equal(t, output, expectedValue)
 	})
 
-	t.Run("Can't catch: the hunter can't catch", func(t *testing.T) {
+	t.Run("Can't catch: the hunter don't have time", func(t *testing.T) {
 		ps := positioner.NewPositionerStub()
 		ps.FuncGetLinearDistance = func(from, to *positioner.Position) (linearDistance float64) {
 			return 10.0
 		}
 		canCatch := simulator.NewCatchSimulatorDefault(10.0, ps)
-		hunter := &simulator.Subject{Position: &positioner.Position{X: 0, Y: 0, Z: 0}, Speed: 15}
-		prey := &simulator.Subject{Position: &positioner.Position{X: 0, Y: 0, Z: 100}, Speed: 5}
+		hunter := &simulator.Subject{Position: &positioner.Position{X: 0, Y: 0, Z: 0}, Speed: 5}
+		prey := &simulator.Subject{Position: &positioner.Position{X: 100, Y: 0, Z: 0}, Speed: 10}
 		output := canCatch.CanCatch(hunter, prey)
 		expectedValue := false
 		require.Equal(t, output, expectedValue)
