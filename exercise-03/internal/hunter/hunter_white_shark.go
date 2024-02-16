@@ -73,7 +73,7 @@ func (w *WhiteShark) Hunt(prey prey.Prey) (duration float64, err error) {
 		Position: w.position,
 		Speed:    w.speed,
 	}
-
+	fmt.Println("sharkSubject", sharkSubject.Position)
 	// check if shark can catch the prey
 	duration, ok := w.simulator.CanCatch(sharkSubject, preySubject)
 	if !ok {
